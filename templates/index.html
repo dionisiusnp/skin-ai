@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skin AI — Konsultan Skincare Personal</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <h1>✨ Skin AI</h1>
+      <p class="subtitle">Foto wajahmu, biar Gemini bantu rekomendasi rutinitas skincare.</p>
+    </header>
+
+    <section class="card">
+      <form id="analyzeForm">
+        <label class="upload-box" id="uploadBox">
+          <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp" required />
+          <span id="uploadLabel">📷 Pilih / ambil foto wajah</span>
+          <img id="preview" alt="preview" style="display:none" />
+        </label>
+        <button type="submit" id="submitBtn">Analisis Kulitku</button>
+      </form>
+      <p class="disclaimer-note">
+        Estimasi kosmetik berbasis citra, bukan diagnosis medis. Foto diproses untuk analisis dan tidak dibagikan ke pihak ketiga.
+      </p>
+    </section>
+
+    <section id="result" class="card result-card" style="display:none"></section>
+  </main>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
