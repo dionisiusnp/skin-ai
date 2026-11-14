@@ -62,8 +62,8 @@ async def index(request: Request):
     return templates.TemplateResponse(request, "index.html", {})
 
 
-@app.get("/healthz")
-async def healthz():
+@app.get("/status")
+async def status():
     """Health check untuk Cloud Run readiness/liveness probe."""
     return {"status": "ok", "gemini_configured": _analyzer is not None}
 
