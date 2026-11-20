@@ -9,22 +9,50 @@
 <body>
   <main class="wrap">
     <header>
-      <h1>✨ Skin AI</h1>
-      <p class="subtitle">Foto wajahmu, biar Gemini bantu rekomendasi rutinitas skincare.</p>
+      <h1><span id="sparkle">✨</span> Skin AI</h1>
+      <p class="subtitle">Foto wajah — langsung dapat rekomendasi skincare yang cocok.</p>
     </header>
 
     <section class="card">
       <form id="analyzeForm">
-        <label class="upload-box" id="uploadBox">
-          <input type="file" id="photoInput" name="photo" accept="image/jpeg,image/png,image/webp" required />
-          <span id="uploadLabel">📷 Pilih / ambil foto wajah</span>
-          <img id="preview" alt="preview" style="display:none" />
-        </label>
-        <button type="submit" id="submitBtn">Analisis Kulitku</button>
+        <div class="mode-row">
+          <button type="button" class="mode-btn active" id="btnModeCamera">📷 Kamera</button>
+          <button type="button" class="mode-btn" id="btnModeGallery">📁 Galeri</button>
+        </div>
+
+        <div class="rec-row">
+          <button type="button" class="rec-btn active" id="btnRecProduk">🛒 Produk brand</button>
+          <button type="button" class="rec-btn" id="btnRecAlami">🌿 Cara alami</button>
+        </div>
+
+        <div class="dummy-row">
+          <button type="button" class="dummy-btn" id="btnDummy">🎭 Mode demo: OFF</button>
+        </div>
+
+        <div class="capture-area" id="captureArea">
+          <div id="capturePlaceholder" class="capture-placeholder">
+            <div class="placeholder-icon" id="placeholderIcon">📷</div>
+            <p class="placeholder-text">Ambil foto atau pilih dari galeri</p>
+          </div>
+          <video id="webcamVideo" autoplay playsinline muted style="display:none"></video>
+          <img id="preview" alt="Preview foto" style="display:none" />
+        </div>
+
+        <input type="file" id="photoInput" accept="image/jpeg,image/png,image/webp" style="display:none" />
+        <input type="file" id="captureInput" accept="image/jpeg,image/png,image/webp" capture="user" style="display:none" />
+        <canvas id="snapCanvas" style="display:none"></canvas>
+
+        <div class="action-row">
+          <button type="button" id="startCamBtn" class="sec-btn">Buka kamera</button>
+          <button type="button" id="snapBtn" class="sec-btn snap-btn" style="display:none">📸 Jepret!</button>
+          <button type="button" id="pickFileBtn" class="sec-btn" style="display:none">📁 Pilih Foto</button>
+          <button type="button" id="retakeBtn" class="retake-btn" style="display:none">↩ Foto ulang</button>
+        </div>
+
+        <button type="submit" id="submitBtn" disabled>Analisis Kulitku</button>
+        <p class="disclaimer-note">Bukan diagnosis medis — ini hanya estimasi visual. Fotomu tidak kami simpan.</p>
       </form>
-      <p class="disclaimer-note">
-        Estimasi kosmetik berbasis citra, bukan diagnosis medis. Foto diproses untuk analisis dan tidak dibagikan ke pihak ketiga.
-      </p>
+      <div class="powered-badge">Powered by <strong>Gemini</strong></div>
     </section>
 
     <section id="result" class="card result-card" style="display:none"></section>

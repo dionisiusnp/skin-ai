@@ -1,19 +1,7 @@
-"""
-Skin AI - Konsultan Skincare Personal
-Backend FastAPI: terima foto wajah, panggil Gemini (multimodal), kembalikan
-analisis kondisi kulit + rekomendasi rutinitas/produk.
-
-Jalankan lokal:
-    pip install -r requirements.txt
-    cp .env.example .env   # isi GEMINI_API_KEY
-    uvicorn app.main:app --reload --port 8080
-
-Deploy ke Cloud Run: lihat DEPLOY.md
-"""
 
 import logging
 
-from fastapi import FastAPI, File, HTTPException, Request, UploadFile
+from fastapi import FastAPI, File, Form, HTTPException, Request, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
@@ -70,7 +58,11 @@ async def status():
 
 @app.post("/analyze")
 @limiter.limit(settings.analyze_rate_limit)
-async def analyze(request: Request, photo: UploadFile = File(...)):
+async def analyze(
+    request: Request,
+    photo: UploadFile = File(...),
+    rec_mode: str = Form("produk"),
+):
     if _analyzer is None:
         raise HTTPException(
             status_code=500,
@@ -93,12 +85,16 @@ async def analyze(request: Request, photo: UploadFile = File(...)):
             status_code=413, detail=f"Ukuran foto melebihi batas {max_mb:.0f} MB."
         )
 
-    logger.info("analyze request: size=%d bytes, type=%s", len(image_bytes), photo.content_type)
+    mode = rec_mode if rec_mode in ("produk", "alami") else "produk"
+    logger.info("analyze request: size=%d bytes, type=%s, mode=%s", len(image_bytes), photo.content_type, mode)
 
     try:
-        result = _analyzer.analyze(image_bytes, photo.content_type)
+        result = _analyzer.analyze(image_bytes, photo.content_type, mode=mode)
     except GeminiError as exc:
         raise HTTPException(status_code=502, detail=str(exc)) from exc
 
-    result["contoh_produk"] = curate(result.get("rekomendasi_kategori_produk", []))
+    if mode == "produk":
+        result["contoh_produk"] = curate(result.get("rekomendasi_kategori_produk", []))
+
+    result["rec_mode"] = mode
     return JSONResponse(content=result)
